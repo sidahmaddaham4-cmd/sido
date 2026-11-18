@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sydos Store | سيدوس ستور</title>
+<meta name="description" content="متجر سيدوس - تسوق بأناقة مع الدفع عند الاستلام وتوصيل إلى جميع الولايات">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#C9A227; --gold-light:#E8D08A; --silver:#C0C0C0;
+    --black:#0B0B0B; --dark:#161616; --white:#FFFFFF; --muted:#9a9a9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Cairo',sans-serif;background:var(--black);color:var(--white);line-height:1.7}
+  a{color:inherit;text-decoration:none}
+  button,input,select,textarea{font-family:inherit}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(11,11,11,.95);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--gold);display:flex;align-items:center;justify-content:space-between;
+    padding:14px 5%;gap:12px;flex-wrap:wrap}
+  .logo{font-size:1.6rem;font-weight:800;background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--silver));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .search{flex:1;max-width:360px;padding:10px 16px;border-radius:30px;border:1px solid var(--silver);
+    background:var(--dark);color:var(--white)}
+  .cart-btn{background:var(--gold);color:var(--black);border:none;padding:10px 18px;border-radius:30px;
+    font-weight:800;cursor:pointer;transition:.3s}
+  .cart-btn:hover{box-shadow:0 0 18px rgba(201,162,39,.6)}
+
+  .hero{text-align:center;padding:90px 5% 70px;
+    background:radial-gradient(circle at top,#2a2208 0%,var(--black) 70%);animation:fade 1.2s ease}
+  .hero h1{font-size:2.6rem;color:var(--gold-light);margin-bottom:12px}
+  .hero p{color:var(--silver);max-width:600px;margin:0 auto 24px}
+  .btn-gold{display:inline-block;background:linear-gradient(90deg,var(--gold),var(--gold-light));
+    color:var(--black);padding:12px 32px;border-radius:30px;font-weight:800;border:none;cursor:pointer;transition:.3s}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,162,39,.4)}
+
+  section{padding:50px 5%}
+  h2{text-align:center;color:var(--gold);margin-bottom:30px;font-size:1.8rem}
+  .cats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+  .cat{padding:8px 20px;border:1px solid var(--silver);border-radius:20px;cursor:pointer;transition:.3s;background:none;color:var(--white)}
+  .cat.active,.cat:hover{background:var(--gold);color:var(--black);border-color:var(--gold)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:22px}
+  .card{background:var(--dark);border:1px solid #2a2a2a;border-radius:16px;overflow:hidden;
+    transition:.35s;animation:fade .8s ease}
+  .card:hover{transform:translateY(-6px);border-color:var(--gold);box-shadow:0 12px 30px rgba(201,162,39,.15)}
+  .card img{width:100%;height:220px;object-fit:cover;background:#222}
+  .card-body{padding:16px}
+  .card h3{font-size:1.1rem;margin-bottom:6px}
+  .card p{color:var(--muted);font-size:.9rem;min-height:40px}
+  .price{margin:10px 0;font-weight:800;color:var(--gold-light)}
+  .old{text-decoration:line-through;color:var(--muted);font-size:.85rem;margin-left:6px}
+  .badge{position:absolute;top:12px;right:12px;background:var(--gold);color:var(--black);
+    padding:4px 10px;border-radius:12px;font-size:.8rem;font-weight:800}
+  .card-wrap{position:relative}
+  .add{width:100%;padding:10px;border:none;border-radius:10px;background:var(--silver);color:var(--black);
+    font-weight:800;cursor:pointer;transition:.3s}
+  .add:hover{background:var(--gold)}
+
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+  .modal.open{display:flex}
+  .box{background:var(--dark);border:1px solid var(--gold);border-radius:18px;max-width:560px;width:100%;
+    max-height:92vh;overflow:auto;padding:24px;animation:fade .4s ease}
+  .box h3{color:var(--gold);margin-bottom:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row>*{flex:1;min-width:140px}
+  label{display:block;margin:10px 0 4px;color:var(--silver);font-size:.9rem}
+  input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #3a3a3a;background:#101010;color:var(--white)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+  .total{font-size:1.2rem;font-weight:800;color:var(--gold-light);margin:16px 0;text-align:center}
+  .error{color:#ff6b6b;font-size:.85rem;margin-top:4px;min-height:1em}
+  .close{float:left;background:none;border:none;color:var(--silver);font-size:1.5rem;cursor:pointer}
+  .cart-line{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #2a2a2a;gap:8px}
+  .qty button{background:var(--silver);border:none;width:26px;height:26px;border-radius:6px;cursor:pointer;font-weight:800}
+  .qty span{margin:0 8px}
+  .remove{background:none;border:none;color:#ff6b6b;cursor:pointer}
+
+  .float-wa{position:fixed;bottom:22px;left:22px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 6px 18px rgba(0,0,0,.4);z-index:60}
+  footer{text-align:center;padding:30px;border-top:1px solid var(--gold);color:var(--muted);margin-top:40px}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--black);
+    padding:12px 22px;border-radius:12px;font-weight:800;display:none;z-index:200}
+
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @media(max-width:600px){.hero h1{font-size:2rem}.logo{font-size:1.3rem}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Sydos Store</div>
+  <input class="search" id="search" type="search" placeholder="ابحث عن منتج...">
+  <button class="cart-btn" id="cartBtn">السلة (<span id="cartCount">0</span>)</button>
+</header>
+
+<section class="hero">
+  <h1>أناقة تليق بك</h1>
+  <p>تسوق بثقة مع الدفع عند الاستلام والتوصيل إلى جميع الولايات</p>
+  <a class="btn-gold" href="#products">تسوق الآن</a>
+</section>
+
+<section id="products">
+  <h2>منتجاتنا</h2>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer>
+  <div class="logo" style="margin-bottom:8px">Sydos Store</div>
+  <p>© <span id="year"></span> جميع الحقوق محفوظة</p>
+</footer>
+
+<a class="float-wa" id="waFloat" target="_blank" title="واتساب">💬</a>
+
+<!-- نافذة السلة والطلب -->
+<div class="modal" id="cartModal">
+  <div class="box">
+    <button class="close" data-close>&times;</button>
+    <h3>سلة الشراء</h3>
+    <div id="cartItems"></div>
+    <div class="total" id="cartTotal"></div>
+    <div id="checkoutArea" style="display:none">
+      <h3 style="margin-top:20px">معلومات التوصيل</h3>
+      <form id="orderForm" novalidate>
+        <label>الاسم الكامل</label>
+        <input name="name" required maxlength="80">
+        <div class="error" data-err="name"></div>
+
+        <div class="row">
+          <div>
+            <label>رقم الهاتف</label>
+            <input name="phone" type="tel" placeholder="05XXXXXXXX" maxlength="10">
+            <div class="error" data-err="phone"></div>
+          </div>
+          <div>
+            <label>رقم هاتف ثانٍ (اختياري)</label>
+            <input name="phone2" type="tel" maxlength="10">
+            <div class="error" data-err="phone2"></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>الولاية</label>
+            <select name="wilaya" id="wilayaSel"></select>
+            <div class="error" data-err="wilaya"></div>
+          </div>
+          <div>
+            <label>البلدية</label>
+            <input name="commune" maxlength="60">
+            <div class="error" data-err="commune"></div>
+          </div>
+        </div>
+
+        <label>نوع التوصيل</label>
+        <select name="delivery" id="deliverySel">
+          <option value="home">توصيل للمنزل</option>
+          <option value="office">توصيل لمكتب الشركة</option>
+        </select>
+
+        <label>العنوان الكامل</label>
+        <textarea name="address" rows="2" maxlength="200"></textarea>
+        <div class="error" data-err="address"></div>
+
+        <div class="row">
+          <div>
+            <label>المقاس</label>
+            <select name="size" id="sizeSel"></select>
+          </div>
+          <div>
+            <label>اللون</label>
+            <select name="color" id="colorSel"></select>
+          </div>
+        </div>
+
+        <div class="total" id="orderTotal"></div>
+        <button class="btn-gold" type="submit" style="width:100%">تأكيد الطلب (الدفع عند الاستلام)</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ======== الإعدادات: عدّل هنا ======== */
+const CONFIG = {
+  whatsapp: "213555000000",          // رقم واتساب بالصيغة الدولية بدون +
+  currency: "دج",
+  // أسعار التوصيل لكل ولاية: [للمنزل، للمكتب]
+  deliveryPrices: {
+    "أدرار":[1200,900],"الشلف":[600,400],"الأغواط":[800,600],"أم البواقي":[600,400],
+    "باتنة":[600,400],"بجاية":[600,400],"بسكرة":[800,600],"بشار":[1100,800],
+    "البليدة":[500,350],"البويرة":[600,400],"تمنراست":[1400,1000],"تبسة":[700,500],
+    "تلمسان":[700,500],"تيارت":[600,400],"تيزي وزو":[600,400],"الجزائر":[400,300],
+    "الجلفة":[800,600],"جيجل":[600,400],"سطيف":[600,400],"سعيدة":[700,500],
+    "سكيكدة":[600,400],"سيدي بلعباس":[700,500],"عنابة":[600,400],"قالمة":[600,400],
+    "قسنطينة":[600,400],"المدية":[500,350],"مستغانم":[700,500],"المسيلة":[700,500],
+    "معسكر":[700,500],"ورقلة":[900,700],"وهران":[700,500],"البيض":[900,700],
+    "إليزي":[1200,900],"برج بوعريريج":[600,400],"بومرداس":[500,350],"الطارف":[600,400],
+    "تندوف":[1300,1000],"تيسمسيلت":[700,500],"الوادي":[800,600],"خنشلة":[700,500],
+    "سوق أهراس":[600,400],"تيبازة":[500,350],"ميلة":[600,400],"عين الدفلى":[600,400],
+    "النعامة":[900,700],"عين تموشنت":[700,500],"غرداية":[900,700],"غليزان":[700,500],
+    "تيميمون":[1200,900],"برج باجي مختار":[1300,1000],"أولاد جلال":[900,700],
+    "بني عباس":[1100,800],"عين صالح":[1300,1000],"عين قزام":[1400,1000],"توقرت":[900,700],
+    "جانت":[1400,1000],"المغير":[900,700],"المنيعة":[900,700]
+  }
+};
+
+/* ======== المنتجات: استبدلها بمنتجاتك ======== */
+const PRODUCTS = [
+  { id:1, name:"ساعة ذهبية كلاسيكية", cat:"إكسسوارات", price:6500, discount:5200,
+    desc:"ساعة أنيقة بإطار ذهبي وعلبة فاخرة.", img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600",
+    sizes:["واحد"], colors:["ذهبي","فضي"], best:true },
+  { id:2, name:"حقيبة جلدية سوداء", cat:"حقائب", price:8900, discount:null,
+    desc:"حقيبة يد من الجلد الطبيعي بتصميم عملي.", img:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600",
+    sizes:["صغير","كبير"], colors:["أسود","بني"], best:false },
+  { id:3, name:"عطر فاخر 100 مل", cat:"عطور", price:7200, discount:6100,
+    desc:"عطر شرقي بنفحات العود والورد.", img:"https://images.unsplash.com/photo-1541643600914-78b084683601?w=600",
+    sizes:["100 مل"], colors:["ذهبي"], best:true },
+  { id:4, name:"نظارة شمسية فضية", cat:"إكسسوارات", price:3400, discount:null,
+    desc:"إطار معدني فضي وعدسات تحمي من الأشعة.", img:"https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600",
+    sizes:["واحد"], colors:["فضي","أسود"], best:false }
+];
+
+/* ======== المنطق ======== */
+let cart = JSON.parse(localStorage.getItem("sydos_cart") || "[]");
+let currentCat = "الكل";
+const $ = s => document.querySelector(s);
+const fmt = n => n.toLocaleString("ar-DZ") + " " + CONFIG.currency;
+const priceOf = p => p.discount ?? p.price;
+const saveCart = () => localStorage.setItem("sydos_cart", JSON.stringify(cart));
+
+function renderCats(){
+  const cats = ["الكل", ...new Set(PRODUCTS.map(p => p.cat))];
+  $("#cats").innerHTML = cats.map(c =>
+    `<button class="cat ${c===currentCat?'active':''}" data-cat="${c}">${c}</button>`).join("");
+}
+
+function renderGrid(){
+  const q = $("#search").value.trim().toLowerCase();
+  const list = PRODUCTS.filter(p =>
+    (currentCat==="الكل" || p.cat===currentCat) &&
+    (p.name.toLowerCase().includes(q) || p.desc.includes(q)));
+  $("#grid").innerHTML = list.length ? list.map(p => `
+    <div class="card-wrap">
+      ${p.discount ? '<span class="badge">عرض خاص</span>' : ''}
+      <div class="card">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <p>${p.desc}</p>
+          <div class="price">${fmt(priceOf(p))}
+            ${p.discount ? `<span class="old">${fmt(p.price)}</span>` : ''}</div>
+          <button class="add" data-add="${p.id}">أضف إلى السلة</button>
+        </div>
+      </div>
+    </div>`).join("")
+  : `<p style="grid-column:1/-1;text-align:center;color:var(--muted)">لا توجد منتجات مطابقة</p>`;
+}
+
+function addToCart(id){
+  const p = PRODUCTS.find(x => x.id===id);
+  const item = cart.find(x => x.id===id && x.size===p.sizes[0] && x.color===p.colors[0]);
+  if(item) item.qty++;
+  else cart.push({ id, size:p.sizes[0], color:p.colors[0], qty:1 });
+  saveCart(); updateCount(); toast("تمت الإضافة إلى السلة");
+}
+
+function updateCount(){
+  $("#cartCount").textContent = cart.reduce((s,i)=>s+i.qty,0);
+}
+
+function cartSubtotal(){
+  return cart.reduce((s,i)=>{
+    const p = PRODUCTS.find(x=>x.id===i.id);
+    return s + priceOf(p)*i.qty;
+  },0);
+}
+
+function renderCart(){
+  if(!cart.length){
+    $("#cartItems").innerHTML = `<p style="color:var(--muted);text-align:center">السلة فارغة</p>`;
+    $("#cartTotal").textContent = "";
+    $("#checkoutArea").style.display = "none";
+    return;
+  }
+  $("#cartItems").innerHTML = cart.map((i,idx)=>{
+    const p = PRODUCTS.find(x=>x.id===i.id);
+    return `<div class="cart-line">
+      <div><strong>${p.name}</strong><br><small style="color:var(--muted)">${i.size} - ${i.color}</small></div>
+      <div class="qty">
+        <button data-dec="${idx}">-</button><span>${i.qty}</span><button data-inc="${idx}">+</button>
+      </div>
+      <div>${fmt(priceOf(p)*i.qty)}</div>
+      <button class="remove" data-rm="${idx}">حذف</button>
+    </div>`;
+  }).join("");
+  $("#cartTotal").textContent = "المجموع الفرعي: " + fmt(cartSubtotal());
+  $("#checkoutArea").style.display = "block";
+  fillOptions();
+  updateOrderTotal();
+}
+
+function fillOptions(){
+  const first = cart[0];
+  const p = PRODUCTS.find(x=>x.id===first.id);
+  $("#sizeSel").innerHTML = p.sizes.map(s=>`<option>${s}</option>`).join("");
+  $("#colorSel").innerHTML = p.colors.map(c=>`<option>${c}</option>`).join("");
+  if(!$("#wilayaSel").options.length){
+    $("#wilayaSel").innerHTML = `<option value="">اختر الولاية</option>` +
+      Object.keys(CONFIG.deliveryPrices).map(w=>`<option>${w}</option>`).join("");
+  }
+}
+
+function deliveryCost(){
+  const w = $("#wilayaSel").value;
+  if(!w) return 0;
+  const [home, office] = CONFIG.deliveryPrices[w];
+  return $("#deliverySel").value==="home" ? home : office;
+}
+
+function updateOrderTotal(){
+  const sub = cartSubtotal(), del = deliveryCost();
+  $("#orderTotal").innerHTML =
+    `المنتجات: ${fmt(sub)} | التوصيل: ${fmt(del)}<br><strong>الإجمالي: ${fmt(sub+del)}</strong>`;
+}
+
+function validate(form){
+  const errs = {};
+  const d = Object.fromEntries(new FormData(form));
+  if(d.name.trim().length < 3) errs.name = "أدخل الاسم الكامل";
+  if(!/^(05|06|07)\d{8}$/.test(d.phone)) errs.phone = "رقم هاتف جزائري صحيح (10 أرقام)";
+  if(d.phone2 && !/^(05|06|07)\d{8}$/.test(d.phone2)) errs.phone2 = "رقم غير صحيح";
+  if(!d.wilaya) errs.wilaya = "اختر الولاية";
+  if(d.commune.trim().length < 2) errs.commune = "أدخل البلدية";
+  if(d.address.trim().length < 5) errs.address = "أدخل العنوان الكامل";
+  document.querySelectorAll("[data-err]").forEach(el => el.textContent = errs[el.dataset.err] || "");
+  return { ok: !Object.keys(errs).length, data: d };
+}
+
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.style.display = "block";
+  clearTimeout(window._t); window._t = setTimeout(()=>t.style.display="none", 2200);
+}
+
+/* ======== الأحداث ======== */
+document.addEventListener("click", e=>{
+  const t = e.target;
+  if(t.dataset.cat){ currentCat = t.dataset.cat; renderCats(); renderGrid(); }
+  if(t.dataset.add) addToCart(+t.dataset.add);
+  if(t.dataset.close!==undefined) $("#cartModal").classList.remove("open");
+  if(t.dataset.inc!==undefined){ cart[t.dataset.inc].qty++; saveCart(); renderCart(); updateCount(); }
+  if(t.dataset.dec!==undefined){
+    const i = cart[t.dataset.dec]; i.qty>1 ? i.qty-- : cart.splice(t.dataset.dec,1);
+    saveCart(); renderCart(); updateCount();
+  }
+  if(t.dataset.rm!==undefined){ cart.splice(t.dataset.rm,1); saveCart(); renderCart(); updateCount(); }
+});
+
+$("#cartBtn").onclick = ()=>{ renderCart(); $("#cartModal").classList.add("open"); };
+$("#search").oninput = renderGrid;
+$("#wilayaSel").onchange = updateOrderTotal;
+$("#deliverySel").onchange = updateOrderTotal;
+
+$("#orderForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  if(!cart.length){ toast("السلة فارغة"); return; }
+  const { ok, data } = validate(e.target);
+  if(!ok){ toast("يرجى تصحيح الحقول المعلّمة"); return; }
+
+  const lines = cart.map(i=>{
+    const p = PRODUCTS.find(x=>x.id===i.id);
+    return `- ${p.name} | ${i.size} | ${i.color} | الكمية: ${i.qty} | ${fmt(priceOf(p)*i.qty)}`;
+  }).join("\n");
+  const sub = cartSubtotal(), del = deliveryCost();
+  const msg =
+`طلب جديد - Sydos Store
+الاسم: ${data.name}
+الهاتف: ${data.phone}${data.phone2 ? "\nهاتف ثانٍ: "+data.phone2 : ""}
+الولاية: ${data.wilaya} - ${data.commune}
+التوصيل: ${data.delivery==="home"?"للمنزل":"لمكتب الشركة"}
+العنوان: ${data.address}
+
+المنتجات:
+${lines}
+
+المنتجات: ${fmt(sub)}
+التوصيل: ${fmt(del)}
+الإجمالي: ${fmt(sub+del)}
+الدفع: عند الاستلام`;
+
+  // حفظ الطلب محلياً وإرساله عبر واتساب
+  const orders = JSON.parse(localStorage.getItem("sydos_orders")||"[]");
+  orders.push({ date:new Date().toISOString(), ...data, total:sub+del });
+  localStorage.setItem("sydos_orders", JSON.stringify(orders));
+
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank");
+  cart = []; saveCart(); updateCount(); renderCart();
+  $("#cartModal").classList.remove("open");
+  e.target.reset();
+  toast("تم تسجيل طلبك، شكراً لك!");
+});
+
+$("#waFloat").href = `https://wa.me/${CONFIG.whatsapp}`;
+$("#year").textContent = new Date().getFullYear();
+renderCats(); renderGrid(); updateCount();
+</script>
+</body>
+</html>
