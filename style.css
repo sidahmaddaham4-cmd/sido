@@ -1,0 +1,107 @@
+:root {
+  --ink: #14213d;
+  --muted: #5b6577;
+  --paper: #fbfbfd;
+  --panel: #ffffff;
+  --sand: #ece8dd;
+  --accent: #1f6f5b;
+  --accent-dark: #17564a;
+  --line: #dfe3ea;
+  --sale: #b3382c;
+  --radius: 14px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "IBM Plex Sans Arabic", Tahoma, Arial, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.8;
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--line);
+  background: var(--panel); position: sticky; top: 0; z-index: 10;
+}
+.brand { font-weight: 700; font-size: 1.2rem; text-decoration: none; }
+
+.btn {
+  display: inline-block; text-align: center; text-decoration: none;
+  background: var(--accent); color: #fff; font-weight: 700;
+  padding: 14px 28px; border-radius: 999px; border: 0; cursor: pointer;
+  font-family: inherit; font-size: 1rem; transition: background .2s;
+}
+.btn:hover { background: var(--accent-dark); }
+.btn-small { padding: 8px 18px; font-size: .9rem; }
+
+.hero { padding: 64px 20px 40px; max-width: 900px; margin: 0 auto; }
+.hero h1 { font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.3; }
+.hero p { color: var(--muted); font-size: 1.15rem; margin-top: 10px; max-width: 52ch; }
+
+main { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
+.section-title { font-size: 1.5rem; margin: 30px 0 18px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px; }
+.card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; text-decoration: none; display: flex; flex-direction: column;
+  transition: transform .2s, box-shadow .2s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(20, 33, 61, .08); }
+.card-body { padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+.card h3 { font-size: 1.1rem; }
+.card p { color: var(--muted); font-size: .95rem; }
+
+.media { aspect-ratio: 1 / 1; background: var(--sand); overflow: hidden; }
+.media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ph { width: 100%; height: 100%; display: grid; place-items: center; font-size: 3.5rem; font-weight: 700; color: var(--accent); }
+
+.price { display: flex; align-items: baseline; gap: 10px; margin-top: 6px; }
+.price strong { font-size: 1.3rem; }
+.price s { color: var(--muted); }
+.badge {
+  background: var(--sale); color: #fff; font-size: .8rem; font-weight: 700;
+  padding: 2px 10px; border-radius: 999px;
+}
+
+/* صفحة المنتج */
+.pdp { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding-top: 30px; }
+.gallery .media { border-radius: var(--radius); border: 1px solid var(--line); }
+.thumbs { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.thumbs button {
+  width: 70px; height: 70px; border-radius: 10px; overflow: hidden; padding: 0;
+  border: 2px solid transparent; background: var(--sand); cursor: pointer;
+}
+.thumbs button[aria-current="true"] { border-color: var(--accent); }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.info h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.4; }
+.info .price strong { font-size: 1.9rem; }
+.info .desc { color: var(--muted); margin: 18px 0; font-size: 1.05rem; max-width: 60ch; }
+.features { list-style: none; margin: 0 0 24px; display: grid; gap: 8px; }
+.features li { padding-right: 28px; position: relative; }
+.features li::before {
+  content: ""; position: absolute; right: 0; top: .6em; width: 14px; height: 8px;
+  border-left: 3px solid var(--accent); border-bottom: 3px solid var(--accent);
+  transform: rotate(-45deg) scale(.9);
+}
+.buy { display: block; width: 100%; }
+
+.foot { border-top: 1px solid var(--line); padding: 24px 20px; text-align: center; color: var(--muted); }
+
+.empty { padding: 60px 0; text-align: center; color: var(--muted); }
+
+@media (max-width: 760px) {
+  .pdp { grid-template-columns: 1fr; gap: 22px; }
+  .hero { padding-top: 40px; }
+  .buy-bar {
+    position: fixed; inset: auto 0 0 0; padding: 12px 16px; background: var(--panel);
+    border-top: 1px solid var(--line); z-index: 20;
+  }
+  body.has-bar { padding-bottom: 80px; }
+}
+@media (min-width: 761px) { .buy-bar { position: static; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
